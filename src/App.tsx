@@ -31,11 +31,15 @@ function App() {
 
   const onSubmitForm = async (formData: Product) => {
     const file = (formData.thumbnail as any)?.file;
-    const thumbnailBase64 = file ? await toBase64(file) : "";
+    const thumbnailBase64 =
+      file && file.status !== "removed" ? await toBase64(file) : "";
 
     const payload = {
       ...formData,
-      thumbnail: thumbnailBase64,
+      thumbnail:
+        typeof formData.thumbnail === "string"
+          ? formData.thumbnail
+          : thumbnailBase64,
       expiredAt: formData.expiredAt
         ? (formData.expiredAt as Dayjs).format("YYYY-MM-DD")
         : "",
